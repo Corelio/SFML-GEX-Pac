@@ -129,6 +129,19 @@ namespace GEX
 		if (isDestroyed()) {
 			state_ = State::Dead;
 		}
+
+		//Update ghost "eyes"
+		if (type_ == ActorType::Ghost)
+		{
+			if (getVelocity().y < 0)
+			{
+				state_ = State::WalkUp;
+			}
+			else
+			{
+				state_ = State::WalkDown;
+			}
+		}
 	}
 
 	//Update Actor

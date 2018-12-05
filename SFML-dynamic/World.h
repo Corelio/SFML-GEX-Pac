@@ -75,6 +75,8 @@ namespace GEX
 
 		void						spawnPlayer();
 
+		void						chasePlayer();
+
 	private:
 		enum Layer
 		{
@@ -112,6 +114,8 @@ namespace GEX
 		int							score_;
 		sf::Text					scoreText_;
 		sf::Text					livesText_;
+
+		float						distanceToChase_;
 
 	};
 

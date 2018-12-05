@@ -56,6 +56,7 @@ namespace GEX
 		, scoreText_()
 		, livesText_()
 		, pacmanSpawnPosition_(40.f, worldBounds_.height / 2.f)
+		, distanceToChase_(worldBounds_.height * 0.3f)
 	{
 
 		sceneTexture_.create(target_.getSize().x, target_.getSize().y);
@@ -107,6 +108,8 @@ namespace GEX
 		{
 			//If its is not run the player position adapter
 			adaptPlayerPosition();
+			//Chase player if in range
+			chasePlayer();
 		}
 
 		//Adapt the Ghost position
@@ -115,6 +118,7 @@ namespace GEX
 		//check if there are any enemy inside of the battlefield and spawn it
 		updateSound();
 
+		//Update Texts
 		updateTexts();
 
 	}
@@ -171,15 +175,11 @@ namespace GEX
 		//Switch state -> ghost eyes ;)
 		if (position.y <= viewBounds.top + BORDER_DISTANCE || position.y >= viewBounds.top + viewBounds.height - BORDER_DISTANCE)
 		{
-			ghost_->setVelocity(0.f, ghost_->getVelocity().y * -1.f);
-			if (ghost_->getState() == Actor::State::WalkUp)
-			{
-				ghost_->setState(Actor::State::WalkDown);
-			}
-			else
-			{
-				ghost_->setState(Actor::State::WalkUp);
-			}
+			ghost_->setVelocity(ghost_->getVelocity().x, ghost_->getVelocity().y * -1.f);
+		}
+		if (position.x <= viewBounds.left + BORDER_DISTANCE || position.x >= viewBounds.left + viewBounds.width - BORDER_DISTANCE)
+		{
+			ghost_->setVelocity(ghost_->getVelocity().x * -1.f, ghost_->getVelocity().y);
 		}
 	}
 
@@ -287,6 +287,14 @@ namespace GEX
 		sceneLayers_[UpperAir]->attachChild(std::move(Pac));
 	}
 
+	void World::chasePlayer()
+	{
+		auto d = distance(*player_, *ghost_);
+		if (d < distanceToChase_) {
+			ghost_->setVelocity(unitVector(player_->getWorldPosition() - ghost_->getWorldPosition()) * 100.f);
+		}
+	}
+
 	//Draw the world
 	void World::draw()
 	{
@@ -324,6 +332,7 @@ namespace GEX
 			else
 			{
 				//no more lives - end the game
+				lives_--;
 				return false;
 			}
 		}
