@@ -52,6 +52,9 @@ namespace GEX
 		, direction_(Direction::Right)
 		, travelDistance_(0.f)
 		, directionIndex_(0)
+		, power_(false)
+		, elapsedPowerTime_(sf::seconds(4.f))
+		, shouldBeAffraid_(false)
 
 	{	  
 		//Load animations map
@@ -78,6 +81,8 @@ namespace GEX
 			return Category::Pacman;
 		case ActorType::Cherry:
 			return Category::Cherry;
+		case ActorType::Power:
+			return Category::Power;
 		}
 	}
 
@@ -131,7 +136,7 @@ namespace GEX
 		}
 
 		//Update ghost "eyes"
-		if (type_ == ActorType::Ghost)
+		if (state_ != State::Dead && type_ == ActorType::Ghost)
 		{
 			if (getVelocity().y < 0)
 			{
@@ -166,12 +171,32 @@ namespace GEX
 		//Set the sprite position over the texture
 		sprite_.setTextureRect(rec);
 
+		// Applying affraid
+		if (type_ == ActorType::Ghost) {
+			sprite_.setColor(sf::Color::White);
+			if (shouldBeAffraid_) {
+				sprite_.setColor(sf::Color::Blue);
+			}
+		}
+
 		//Center the sprite
 		centerOrigin(sprite_);
 
 		//Update the entity, only if the Actor is not dead
 		if (state_ != State::Dead) {// dont move it while dying
 			Entity::updateCurrent(dt, commands);
+		}
+
+		if (power_)
+		{
+			if (elapsedPowerTime_ <= sf::Time::Zero)
+			{
+				power_ = false;
+			}
+			else
+			{
+				elapsedPowerTime_ -= dt;
+			}
 		}
 	}
 
@@ -186,6 +211,22 @@ namespace GEX
 	{
 		//Actor must be destroied and the dead animation must finish
 		return isDestroyed() && state_ == State::Dead && animations_[state_].isFinished(); 
+	}
+
+	bool Actor::hasPower() const
+	{
+		return power_;
+	}
+
+	void Actor::addPower()
+	{
+		power_ = true;
+		elapsedPowerTime_ = sf::seconds(10.f);
+	}
+
+	void Actor::shouldBeAffraid(bool beAffraid)
+	{
+		shouldBeAffraid_ = beAffraid;
 	}
 
 

@@ -88,6 +88,10 @@ namespace GEX
 		//Reset the player velocity
 		player_->setVelocity(0.f, 0.f);
 
+		// OK That os a work around, but is the easy way to do that
+		// Pass the pacman's power state of the ghost 
+		informPowerToGhost();
+
 		// run all commands in the command queue
 		while (!commandQueue_.isEmpty())
 		{
@@ -109,11 +113,18 @@ namespace GEX
 			//If its is not run the player position adapter
 			adaptPlayerPosition();
 			//Chase player if in range
-			chasePlayer();
+			if (ghost_->getHitpoints() > 0)
+			{
+				chasePlayer();
+			}
 		}
 
 		//Adapt the Ghost position
-		adaptGhostPosition();
+		if (ghost_->getHitpoints() > 0)
+		{
+			adaptGhostPosition();
+		}
+		
 
 		//check if there are any enemy inside of the battlefield and spawn it
 		updateSound();
@@ -171,6 +182,15 @@ namespace GEX
 		sf::Vector2f position = ghost_->getPosition();
 
 		//If ghost is close to the top or bottom border
+		//MOve it back inside
+		position.x = std::max(position.x, viewBounds.left + BORDER_DISTANCE);
+		position.x = std::min(position.x, viewBounds.left + viewBounds.width - BORDER_DISTANCE);
+
+		position.y = std::max(position.y, viewBounds.top + BORDER_DISTANCE);
+		position.y = std::min(position.y, viewBounds.top + viewBounds.height - BORDER_DISTANCE);
+
+		ghost_->setPosition(position);
+
 		//Switch Y velocity direction
 		//Switch state -> ghost eyes ;)
 		if (position.y <= viewBounds.top + BORDER_DISTANCE || position.y >= viewBounds.top + viewBounds.height - BORDER_DISTANCE)
@@ -264,8 +284,25 @@ namespace GEX
 			else if (matchesCategories(collindingPair, Category::Type::Pacman, Category::Type::Ghost))
 			{
 				auto& Pacman = static_cast<Actor&>(*collindingPair.first);
+				auto& Ghost = static_cast<Actor&>(*collindingPair.second);
 
-				Pacman.destroy();
+				if (Pacman.hasPower()) {
+					Ghost.destroy();
+				}
+				else {
+					Pacman.destroy();
+				}
+
+				
+			}
+			//Pacman Power collision
+			else if (matchesCategories(collindingPair, Category::Type::Pacman, Category::Type::Power))
+			{
+				auto& Pacman = static_cast<Actor&>(*collindingPair.first);
+				auto& Power  = static_cast<Actor&>(*collindingPair.second);
+
+				Pacman.addPower();
+				Power.destroy();
 			}
 		}
 	}
@@ -291,8 +328,13 @@ namespace GEX
 	{
 		auto d = distance(*player_, *ghost_);
 		if (d < distanceToChase_) {
-			ghost_->setVelocity(unitVector(player_->getWorldPosition() - ghost_->getWorldPosition()) * 100.f);
+			ghost_->setVelocity(unitVector(player_->getWorldPosition() - ghost_->getWorldPosition())  * (player_->hasPower() ? -1.f : 1.f) * 100.f);
 		}
+	}
+
+	void World::informPowerToGhost()
+	{
+		ghost_->shouldBeAffraid(player_->hasPower());
 	}
 
 	//Draw the world
@@ -389,5 +431,10 @@ namespace GEX
 		Cherry->setState(Actor::State::Idle); //Set start state
 		sceneLayers_[UpperAir]->attachChild(std::move(Cherry));
 
+		//Power
+		std::unique_ptr<Actor> Power(new Actor(ActorType::Power, textures_));
+		Power->setPosition(worldView_.getSize().x - worldView_.getSize().x * 0.9f, worldBounds_.height - worldView_.getSize().y * 0.2f);
+		Power->setState(Actor::State::Idle); //Set start state
+		sceneLayers_[UpperAir]->attachChild(std::move(Power));
 	}
 }

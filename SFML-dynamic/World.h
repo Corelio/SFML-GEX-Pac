@@ -77,6 +77,8 @@ namespace GEX
 
 		void						chasePlayer();
 
+		void						informPowerToGhost();
+
 	private:
 		enum Layer
 		{

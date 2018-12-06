@@ -40,7 +40,7 @@ namespace GEX
 	class TextNode;
 
 	//Possible actors
-	enum class ActorType { Pacman, Ghost, Cherry };
+	enum class ActorType { Pacman, Ghost, Cherry, Power };
 
 	class Actor : public Entity
 	{
@@ -63,6 +63,9 @@ namespace GEX
 		Actor::State							getState() const;
 		Actor::Direction						getDirection() const;
 		bool									isMarkedForRemoval() const override;
+		bool									hasPower() const;
+		void									addPower();
+		void									shouldBeAffraid(bool beAffraid);
 
 	private:
 		void									updateStates();
@@ -79,6 +82,9 @@ namespace GEX
 
 		float									travelDistance_;
 		std::size_t								directionIndex_;
+		bool									power_;
+		sf::Time								elapsedPowerTime_;
+		bool									shouldBeAffraid_;
 
 	};
 }

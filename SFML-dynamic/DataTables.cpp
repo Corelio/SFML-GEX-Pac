@@ -38,6 +38,8 @@ namespace GEX
 
 		JsonFrameParser frames = JsonFrameParser("Media/Textures/Atlas.json");
 
+		// All actors must have a dead state otherwise the application will break when the actor is destroyed
+
 		//Pacman
 		data[ActorType::Pacman].texture = TextureID::Atlas;
 		data[ActorType::Pacman].hitpoints = 100;
@@ -54,11 +56,11 @@ namespace GEX
 		//Cherry
 		data[ActorType::Cherry].texture = TextureID::Atlas;
 		data[ActorType::Cherry].hitpoints = 100;
-		data[ActorType::Cherry].speed = 50;
+		data[ActorType::Cherry].speed = 0;
 												
 		data[ActorType::Cherry].animations[Actor::State::Idle].addFrameSet(frames.getFramesFor("cherry"));
 		data[ActorType::Cherry].animations[Actor::State::Idle].setDuration(sf::Time(sf::seconds(1.f)));
-		data[ActorType::Cherry].animations[Actor::State::Idle].setRepeating(true);
+		data[ActorType::Cherry].animations[Actor::State::Idle].setRepeating(false);
 
 		//Ghost
 		data[ActorType::Ghost].texture = TextureID::Atlas;
@@ -72,6 +74,23 @@ namespace GEX
 		data[ActorType::Ghost].animations[Actor::State::WalkDown].addFrameSet(frames.getFramesFor("ghost down"));
 		data[ActorType::Ghost].animations[Actor::State::WalkDown].setDuration(sf::Time(sf::seconds(1.f)));
 		data[ActorType::Ghost].animations[Actor::State::WalkDown].setRepeating(true);
+
+		data[ActorType::Ghost].animations[Actor::State::Dead].addFrameSet(frames.getFramesFor("ghost up"));
+		data[ActorType::Ghost].animations[Actor::State::Dead].setDuration(sf::Time(sf::seconds(0.f)));
+		data[ActorType::Ghost].animations[Actor::State::Dead].setRepeating(false);
+
+		//Cherry
+		data[ActorType::Power].texture = TextureID::Atlas;
+		data[ActorType::Power].hitpoints = 100;
+		data[ActorType::Power].speed = 0;
+						
+		data[ActorType::Power].animations[Actor::State::Idle].addFrameSet(frames.getFramesFor("cherry"));
+		data[ActorType::Power].animations[Actor::State::Idle].setDuration(sf::Time(sf::seconds(1.f)));
+		data[ActorType::Power].animations[Actor::State::Idle].setRepeating(false);
+
+		data[ActorType::Power].animations[Actor::State::Dead].addFrameSet(frames.getFramesFor("cherry"));
+		data[ActorType::Power].animations[Actor::State::Dead].setDuration(sf::Time(sf::seconds(0.f)));
+		data[ActorType::Power].animations[Actor::State::Dead].setRepeating(false);
 
 		return data;
 	}

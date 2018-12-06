@@ -50,6 +50,7 @@ namespace Category
 		Pacman				= 1 << 13,
 		Ghost				= 1 << 14,
 		Cherry				= 1 << 15,
+		Power				= 1 << 16,
 
 		Aircraft			= PlayerAircraft | EnemyAircraft | AlliedAircraft,
 		Projectile			= EnemyProjectile | AlliedProjectile
