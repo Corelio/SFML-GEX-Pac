@@ -27,6 +27,15 @@
 * I certify that this work is solely my own and complies with
 * NBCC Academic Integrity Policy (policy 1111)
 */
+
+/**
+	My Choice of having just one class to all actors made me add functions that does not
+	belong to all Actors, having to check type inside of the class
+
+	@TODO Separate into different objects
+
+*/
+
 #pragma once
 #include "Entity.h"
 #include <SFML/Graphics/Sprite.hpp>
@@ -89,6 +98,9 @@ namespace GEX
 		sf::Time								elapsedPowerTime_;
 		bool									shouldBeAffraid_;
 		sf::Time								affraidElapsedTime_;
+		sf::Time								powerCherryBlinkTime_;
+		bool									blinkState_;
+		float									totalPowerTime_;
 
 	};
 }

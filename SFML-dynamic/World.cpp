@@ -62,10 +62,10 @@ namespace GEX
 
 		sceneTexture_.create(target_.getSize().x, target_.getSize().y);
 
-		//Load all textures
+		// Load all textures
 		loadTextures();
 
-		//prepare the view
+		// Prepare the view
 
 		worldView_.setCenter(spawnPosition_);
 
@@ -80,13 +80,13 @@ namespace GEX
 		livesText_.setCharacterSize(16.0f);
 		livesText_.setString("Lives: " + std::to_string(lives_));
 
-		//Build the world
+		// Build the world
 		buildScene();
 	}
 
 	void World::update(sf::Time dt, CommandQueue& commands)
 	{
-		//Reset the player velocity
+		// Reset the player velocity
 		player_->setVelocity(0.f, 0.f);
 
 		// OK That os a work around, but is the easy way to do that
@@ -99,21 +99,21 @@ namespace GEX
 			sceneGraph_.onCommand(commandQueue_.pop(), dt);
 		}
 
-		//Handleling collisions
+		// Handleling collisions
 		handleCollision();
 
 		//remove all wrecks from the scene graph
 		sceneGraph_.removeWrecks();
 
-		//All scene nodes should be updated
+		// All scene nodes should be updated
 		sceneGraph_.update(dt, commands);
 
-		//Check if player is destroyed
+		// Check if player is destroyed
 		if (!player_->isDestroyed())
 		{
-			//If its is not run the player position adapter
+			// If its is not run the player position adapter
 			adaptPlayerPosition();
-			//Chase player if in range
+			// Chase player if in range
 			if (ghost_->getHitpoints() > 0)
 			{
 				chasePlayer();
@@ -127,21 +127,21 @@ namespace GEX
 		}
 		
 
-		//check if there are any enemy inside of the battlefield and spawn it
+		// Check if there are any enemy inside of the battlefield and spawn it
 		updateSound();
 
-		//Update Texts
+		// Update Texts
 		updateTexts();
 
-		//Update lives if score is % 1000
+		// Update lives if score is % 1000
 		checkScore();
 
 	}
 
-	//Adapt/correct/change actor position
+	// Adapt/correct/change actor position
 	void World::adaptPlayerPosition()
 	{
-		//Don't allow the Actor to leave the screen
+		// Don't allow the Actor to leave the screen
 		sf::FloatRect viewBounds(worldView_.getCenter()-worldView_.getSize() / 2.f, worldView_.getSize());
 
 		sf::Vector2f position = player_->getPosition();
@@ -186,7 +186,7 @@ namespace GEX
 		sf::Vector2f position = ghost_->getPosition();
 
 		//If ghost is close to the top or bottom border
-		//MOve it back inside
+		//Move it back inside
 		position.x = std::max(position.x, viewBounds.left + BORDER_DISTANCE);
 		position.x = std::min(position.x, viewBounds.left + viewBounds.width - BORDER_DISTANCE);
 
@@ -372,6 +372,7 @@ namespace GEX
 
 	}
 
+	// Check the score to add new lives
 	void World::checkScore()
 	{
 		//EXTRA - each 1000 points get a life
@@ -430,8 +431,8 @@ namespace GEX
 	//Load textures
 	void World::loadTextures()
 	{
-		textures_.load(GEX::TextureID::Jungle,		"Media/Textures/background.png");
-		textures_.load(GEX::TextureID::Atlas,		"Media/Textures/Atlas.png");
+		textures_.load(GEX::TextureID::Jungle,		 "Media/Textures/background.png");
+		textures_.load(GEX::TextureID::Atlas,		 "Media/Textures/Atlas.png");
 		textures_.load(GEX::TextureID::PacmanAtlas,  "Media/Textures/pacManAtlas.png");
 	}
 
@@ -465,21 +466,21 @@ namespace GEX
 
 		//Ghost
 		std::unique_ptr<Actor> Ghost(new Actor(ActorType::Ghost, textures_));
-		Ghost->setPosition(worldView_.getSize().x - worldView_.getSize().x * 0.3f, worldBounds_.top + 50.f);
+		Ghost->setPosition(randowPositionInsideWorldBounds());
 		Ghost->setVelocity(0.f, 100.f);
 		Ghost->setState(Actor::State::WalkDown); //Set start state
 		ghost_ = Ghost.get();
 		sceneLayers_[UpperAir]->attachChild(std::move(Ghost));
 		
-		//Cheryy
+		//Chery
 		std::unique_ptr<Actor> Cherry(new Actor(ActorType::Cherry, textures_));
-		Cherry->setPosition(worldView_.getSize().x - worldView_.getSize().x * 0.1f, worldBounds_.height / 2.f);
+		Cherry->setPosition(randowPositionInsideWorldBounds());
 		Cherry->setState(Actor::State::Idle); //Set start state
 		sceneLayers_[UpperAir]->attachChild(std::move(Cherry));
 
 		//Power Chery
 		std::unique_ptr<Actor> Power(new Actor(ActorType::Power, textures_));
-		Power->setPosition(worldView_.getSize().x - worldView_.getSize().x * 0.9f, worldBounds_.height - worldView_.getSize().y * 0.2f);
+		Power->setPosition(randowPositionInsideWorldBounds());
 		Power->setState(Actor::State::Idle); //Set start state
 		sceneLayers_[UpperAir]->attachChild(std::move(Power));
 	}

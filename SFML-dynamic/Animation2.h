@@ -46,7 +46,7 @@ namespace GEX
 
 		//Getters and setters
 		void				addFrame(Frame frame);
-		void				addFrameSet(std::vector<Frame> frames);
+		void				addFrameSet(std::vector<Frame> frames); //Updated
 		void				setDuration(sf::Time time);
 		sf::Time			getDuration() const;
 		void				setRepeating(bool repeat);

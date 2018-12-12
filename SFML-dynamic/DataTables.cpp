@@ -62,6 +62,10 @@ namespace GEX
 		data[ActorType::Cherry].animations[Actor::State::Idle].setDuration(sf::Time(sf::seconds(1.f)));
 		data[ActorType::Cherry].animations[Actor::State::Idle].setRepeating(false);
 
+		data[ActorType::Cherry].animations[Actor::State::Dead].addFrameSet(frames.getFramesFor("cherry"));
+		data[ActorType::Cherry].animations[Actor::State::Dead].setDuration(sf::Time(sf::seconds(1.f)));
+		data[ActorType::Cherry].animations[Actor::State::Dead].setRepeating(false);
+
 		//Ghost
 		data[ActorType::Ghost].texture = TextureID::PacmanAtlas;
 		data[ActorType::Ghost].hitpoints = 100;

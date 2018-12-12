@@ -55,6 +55,9 @@ namespace GEX
 		, power_(false)
 		, elapsedPowerTime_(sf::seconds(4.f))
 		, shouldBeAffraid_(false)
+		, powerCherryBlinkTime_(sf::Time::Zero)
+		, blinkState_(true)
+		, totalPowerTime_(10.f)
 
 	{	  
 		//Load animations map
@@ -198,9 +201,16 @@ namespace GEX
 		//Set the sprite position over the texture
 		sprite_.setTextureRect(rec);
 
-		// Change the color of the special cherry
+		// Change the color of the special cherry and make it blink
 		if (type_ == ActorType::Power) {
-				sprite_.setColor(sf::Color::Magenta);
+			if (powerCherryBlinkTime_ >= sf::seconds(1.f)) {
+				blinkState_ = !blinkState_;
+				powerCherryBlinkTime_ -= sf::seconds(1.f);
+			}
+			else {
+				powerCherryBlinkTime_ += dt;
+			}
+			blinkState_ ? sprite_.setColor(sf::Color::Magenta) : sprite_.setColor(sf::Color::White);
 		}
 
 		//Center the sprite
@@ -238,33 +248,39 @@ namespace GEX
 		return isDestroyed() && state_ == State::Dead && animations_[state_].isFinished(); 
 	}
 
+	// Return the power state of the actor
 	bool Actor::hasPower() const
 	{
 		return power_;
 	}
 
+	// Adds power to the actor also starts the elapsed countdown to remove the power
 	void Actor::addPower()
 	{
 		power_ = true;
-		elapsedPowerTime_ = sf::seconds(10.f);
+		elapsedPowerTime_ = sf::seconds(totalPowerTime_);
 	}
 
+	// Removes the power of the Actor and sets the elapsed power time to Zero
 	void Actor::removePower()
 	{
 		power_ = false;
 		elapsedPowerTime_ = sf::Time::Zero;
 	}
 
+	// Return if the actor should be affraid of the other actors
 	void Actor::shouldBeAffraid(bool beAffraid)
 	{
 		shouldBeAffraid_ = beAffraid;
 	}
 
+	// Set the amount of time remaining for the affraid mode
 	void Actor::setAffraidElapsedTime(sf::Time affraidElapsedTime)
 	{
 		affraidElapsedTime_ = affraidElapsedTime;
 	}
 
+	// Return the time remaining for the Power
 	sf::Time Actor::getElapsedPowerTime()
 	{
 		return elapsedPowerTime_;
