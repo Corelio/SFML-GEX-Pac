@@ -48,7 +48,9 @@ namespace GEX
 
 	void Animation2::addFrameSet(std::vector<Frame> frames)
 	{
-		frames_ = frames;
+		for (auto f : frames) {
+			frames_.emplace_back(f);
+		}
 	}
 
 	void Animation2::setDuration(sf::Time time)

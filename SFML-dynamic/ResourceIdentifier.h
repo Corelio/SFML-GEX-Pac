@@ -48,6 +48,7 @@ namespace GEX
 		Zombie2,
 		Zombie3,
 		Atlas,
+		PacmanAtlas,
 	};
 
 	enum class FontID

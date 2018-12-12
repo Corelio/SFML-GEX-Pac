@@ -387,6 +387,7 @@ namespace GEX
 	{
 		textures_.load(GEX::TextureID::Jungle,		"Media/Textures/background.png");
 		textures_.load(GEX::TextureID::Atlas,		"Media/Textures/Atlas.png");
+		textures_.load(GEX::TextureID::PacmanAtlas,  "Media/Textures/pacManAtlas.png");
 	}
 
 	//Build the world

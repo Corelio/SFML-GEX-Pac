@@ -46,7 +46,7 @@ namespace GEX
 	{
 	public:
 		//Possible state for the actors
-		enum class State { Idle, Walk, Dead, WalkUp, WalkDown, count};
+		enum class State { Idle, Walk, Dead, WalkUp, WalkDown, WalkLeft, WalkRight, RetreatStart, RetreatEnd, count};
 
 		//Actor possible direction
 		enum class Direction { Left, Right, Up, Down };
@@ -68,7 +68,7 @@ namespace GEX
 		void									shouldBeAffraid(bool beAffraid);
 
 	private:
-		void									updateStates();
+		void									updateStates(sf::Time dt);
 		void									updateCurrent(sf::Time dt, CommandQueue& commands) override;
 		void									drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -85,6 +85,7 @@ namespace GEX
 		bool									power_;
 		sf::Time								elapsedPowerTime_;
 		bool									shouldBeAffraid_;
+		sf::Time								retreatElapsed_;
 
 	};
 }

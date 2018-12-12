@@ -36,16 +36,16 @@ namespace GEX
 	{
 		std::map<ActorType, ActorData> data;
 
-		JsonFrameParser frames = JsonFrameParser("Media/Textures/Atlas.json");
+		JsonFrameParser frames = JsonFrameParser("Media/Textures/pacManAtlas.json");
 
 		// All actors must have a dead state otherwise the application will break when the actor is destroyed
 
 		//Pacman
-		data[ActorType::Pacman].texture = TextureID::Atlas;
+		data[ActorType::Pacman].texture = TextureID::PacmanAtlas;
 		data[ActorType::Pacman].hitpoints = 100;
 		data[ActorType::Pacman].speed = 50;
 						
-		data[ActorType::Pacman].animations[Actor::State::Walk].addFrameSet(frames.getFramesFor("pacman"));
+		data[ActorType::Pacman].animations[Actor::State::Walk].addFrameSet(frames.getFramesFor("chomp"));
 		data[ActorType::Pacman].animations[Actor::State::Walk].setDuration(sf::Time(sf::seconds(1.f)));
 		data[ActorType::Pacman].animations[Actor::State::Walk].setRepeating(true);
 						
@@ -54,7 +54,7 @@ namespace GEX
 		data[ActorType::Pacman].animations[Actor::State::Dead].setRepeating(false);
 
 		//Cherry
-		data[ActorType::Cherry].texture = TextureID::Atlas;
+		data[ActorType::Cherry].texture = TextureID::PacmanAtlas;
 		data[ActorType::Cherry].hitpoints = 100;
 		data[ActorType::Cherry].speed = 0;
 												
@@ -63,24 +63,41 @@ namespace GEX
 		data[ActorType::Cherry].animations[Actor::State::Idle].setRepeating(false);
 
 		//Ghost
-		data[ActorType::Ghost].texture = TextureID::Atlas;
+		data[ActorType::Ghost].texture = TextureID::PacmanAtlas;
 		data[ActorType::Ghost].hitpoints = 100;
 		data[ActorType::Ghost].speed = 50;
 		
-		data[ActorType::Ghost].animations[Actor::State::WalkUp].addFrameSet(frames.getFramesFor("ghost up"));
+		data[ActorType::Ghost].animations[Actor::State::WalkUp].addFrameSet(frames.getFramesFor("red up"));
 		data[ActorType::Ghost].animations[Actor::State::WalkUp].setDuration(sf::Time(sf::seconds(1.f)));
 		data[ActorType::Ghost].animations[Actor::State::WalkUp].setRepeating(true);
 						
-		data[ActorType::Ghost].animations[Actor::State::WalkDown].addFrameSet(frames.getFramesFor("ghost down"));
+		data[ActorType::Ghost].animations[Actor::State::WalkDown].addFrameSet(frames.getFramesFor("red down"));
 		data[ActorType::Ghost].animations[Actor::State::WalkDown].setDuration(sf::Time(sf::seconds(1.f)));
 		data[ActorType::Ghost].animations[Actor::State::WalkDown].setRepeating(true);
+
+		data[ActorType::Ghost].animations[Actor::State::WalkRight].addFrameSet(frames.getFramesFor("red right"));
+		data[ActorType::Ghost].animations[Actor::State::WalkRight].setDuration(sf::Time(sf::seconds(1.f)));
+		data[ActorType::Ghost].animations[Actor::State::WalkRight].setRepeating(true);
+
+		data[ActorType::Ghost].animations[Actor::State::WalkLeft].addFrameSet(frames.getFramesFor("red left"));
+		data[ActorType::Ghost].animations[Actor::State::WalkLeft].setDuration(sf::Time(sf::seconds(1.f)));
+		data[ActorType::Ghost].animations[Actor::State::WalkLeft].setRepeating(true);
+
+		data[ActorType::Ghost].animations[Actor::State::RetreatStart].addFrameSet(frames.getFramesFor("blue"));
+		data[ActorType::Ghost].animations[Actor::State::RetreatStart].setDuration(sf::Time(sf::seconds(1.f)));
+		data[ActorType::Ghost].animations[Actor::State::RetreatStart].setRepeating(true);
+
+		data[ActorType::Ghost].animations[Actor::State::RetreatEnd].addFrameSet(frames.getFramesFor("blue"));
+		data[ActorType::Ghost].animations[Actor::State::RetreatEnd].addFrameSet(frames.getFramesFor("white"));
+		data[ActorType::Ghost].animations[Actor::State::RetreatEnd].setDuration(sf::Time(sf::seconds(1.f)));
+		data[ActorType::Ghost].animations[Actor::State::RetreatEnd].setRepeating(true);
 
 		data[ActorType::Ghost].animations[Actor::State::Dead].addFrameSet(frames.getFramesFor("ghost up"));
 		data[ActorType::Ghost].animations[Actor::State::Dead].setDuration(sf::Time(sf::seconds(0.f)));
 		data[ActorType::Ghost].animations[Actor::State::Dead].setRepeating(false);
 
-		//Cherry
-		data[ActorType::Power].texture = TextureID::Atlas;
+		// Special Cherry
+		data[ActorType::Power].texture = TextureID::PacmanAtlas;
 		data[ActorType::Power].hitpoints = 100;
 		data[ActorType::Power].speed = 0;
 						

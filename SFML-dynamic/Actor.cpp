@@ -55,6 +55,7 @@ namespace GEX
 		, power_(false)
 		, elapsedPowerTime_(sf::seconds(4.f))
 		, shouldBeAffraid_(false)
+		, retreatElapsed_(sf::Time::Zero)
 
 	{	  
 		//Load animations map
@@ -128,23 +129,39 @@ namespace GEX
 	}
 
 	//Update Actor state
-	void Actor::updateStates()
+	void Actor::updateStates(sf::Time dt)
 	{
 		//If actor hitppoints is zero -> start death animation
 		if (isDestroyed()) {
 			state_ = State::Dead;
 		}
 
-		//Update ghost "eyes"
-		if (state_ != State::Dead && type_ == ActorType::Ghost)
-		{
-			if (getVelocity().y < 0)
-			{
-				state_ = State::WalkUp;
+		//Check if the actor should be affraid
+		if (shouldBeAffraid_) {
+			if (state_ != State::RetreatStart && state_ != State::RetreatEnd) {
+				state_ = State::RetreatStart;
+				retreatElapsed_ = sf::Time::Zero;
 			}
-			else
+			else {
+				retreatElapsed_ += dt;
+			}
+
+			if (retreatElapsed_ >= sf::seconds(3)) {
+				state_ = State::RetreatEnd;
+			}
+		}
+		else {
+			//Update ghost "eyes"
+			if (state_ != State::Dead && type_ == ActorType::Ghost)
 			{
-				state_ = State::WalkDown;
+				if (getVelocity().y < 0)
+				{
+					state_ = State::WalkUp;
+				}
+				else
+				{
+					state_ = State::WalkDown;
+				}
 			}
 		}
 	}
@@ -153,7 +170,7 @@ namespace GEX
 	void Actor::updateCurrent(sf::Time dt, GEX::CommandQueue & commands)
 	{
 		//Update States
-		updateStates();
+		updateStates(dt);
 
 		//Get the animation
 		auto rec = animations_.at(state_).update(dt);
@@ -171,14 +188,6 @@ namespace GEX
 		//Set the sprite position over the texture
 		sprite_.setTextureRect(rec);
 
-		// Applying affraid
-		if (type_ == ActorType::Ghost) {
-			sprite_.setColor(sf::Color::White);
-			if (shouldBeAffraid_) {
-				sprite_.setColor(sf::Color::Blue);
-			}
-		}
-
 		//Center the sprite
 		centerOrigin(sprite_);
 
@@ -187,6 +196,7 @@ namespace GEX
 			Entity::updateCurrent(dt, commands);
 		}
 
+		//Pacman Power
 		if (power_)
 		{
 			if (elapsedPowerTime_ <= sf::Time::Zero)
