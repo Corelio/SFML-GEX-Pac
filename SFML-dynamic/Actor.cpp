@@ -57,7 +57,7 @@ namespace GEX
 		, shouldBeAffraid_(false)
 		, powerCherryBlinkTime_(sf::Time::Zero)
 		, blinkState_(true)
-		, totalPowerTime_(10.f)
+		, totalPowerTime_(6.f)
 
 	{	  
 		//Load animations map

@@ -275,7 +275,7 @@ namespace GEX
 			if (matchesCategories(collindingPair, Category::Type::Pacman, Category::Type::Cherry))
 			{
 				auto& Pacman = static_cast<Actor&>(*collindingPair.first);
-				Pacman.setPosition(pacmanSpawnPosition_);
+				Pacman.setPosition(randowPositionInsideWorldBounds());
 				score_ += 200;
 				
 			}
