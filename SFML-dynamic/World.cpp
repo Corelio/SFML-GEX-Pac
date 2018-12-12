@@ -6,7 +6,7 @@
 * @version 1.0
 *
 * @section DESCRIPTION
-* Test #1 - Pacman (Nov, 23th)
+* Test #2 - Pacman (Dec, 12th)
 *
 * @section LICENSE
 *
@@ -34,7 +34,6 @@
 #include "Utility.h"
 #include "Actor.h"
 #include "FontManager.h"
-#include <iostream>
 
 namespace GEX
 {
@@ -261,8 +260,8 @@ namespace GEX
 
 	//Handle all actor collisions
 	//Only two possible collisions
-	//Pacman / Ghost -> pacman dies
-	//Pacman / Cherry -> pacman gets 200 points and respawn at start position
+	//Pacman / Ghost -> if pacman has power, he gets 200 points and ghost respawn in a random position
+	//Pacman / Cherry -> pacman gets 200 points and respawn at randowm position
 	void World::handleCollision()
 	{
 		// Build a list of collinding Pairs of SceneNode
@@ -353,6 +352,7 @@ namespace GEX
 	void World::informPowerToGhost()
 	{
 		ghost_->shouldBeAffraid(player_->hasPower());
+		ghost_->setAffraidElapsedTime(player_->getElapsedPowerTime());
 	}
 
 	// Generate a randow position inside the world bounds

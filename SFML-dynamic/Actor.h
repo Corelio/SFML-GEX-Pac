@@ -6,7 +6,7 @@
 * @version 1.0
 *
 * @section DESCRIPTION
-* Test #1 - Pacman (Nov, 23th)
+* Test #2 - Pacman (Dec, 12th)
 *
 * @section LICENSE
 *
@@ -67,6 +67,8 @@ namespace GEX
 		void									addPower();
 		void									removePower();
 		void									shouldBeAffraid(bool beAffraid);
+		void									setAffraidElapsedTime(sf::Time affraidElapsedTime);
+		sf::Time								getElapsedPowerTime();
 
 	private:
 		void									updateStates(sf::Time dt);
@@ -86,7 +88,7 @@ namespace GEX
 		bool									power_;
 		sf::Time								elapsedPowerTime_;
 		bool									shouldBeAffraid_;
-		sf::Time								retreatElapsed_;
+		sf::Time								affraidElapsedTime_;
 
 	};
 }

@@ -6,7 +6,7 @@
 * @version 1.0
 *
 * @section DESCRIPTION
-* Test #1 - Pacman (Nov, 23th)
+* Test #2 - Pacman (Dec, 12th)
 *
 * @section LICENSE
 *
@@ -55,7 +55,6 @@ namespace GEX
 		, power_(false)
 		, elapsedPowerTime_(sf::seconds(4.f))
 		, shouldBeAffraid_(false)
-		, retreatElapsed_(sf::Time::Zero)
 
 	{	  
 		//Load animations map
@@ -108,7 +107,6 @@ namespace GEX
 		Entity::accelerate(velocity);
 	}
 
-
 	//Set the actor state
 	void Actor::setState(State state)
 	{
@@ -138,15 +136,11 @@ namespace GEX
 
 		//Check if the actor should be affraid
 		if (shouldBeAffraid_) {
-			if (state_ != State::RetreatStart && state_ != State::RetreatEnd) {
+			// Change the animation for the last 2 seconds of pac power
+			if (affraidElapsedTime_ > sf::seconds(2.f)) {
 				state_ = State::RetreatStart;
-				retreatElapsed_ = sf::Time::Zero;
 			}
 			else {
-				retreatElapsed_ += dt;
-			}
-
-			if (retreatElapsed_ >= sf::seconds(3)) {
 				state_ = State::RetreatEnd;
 			}
 		}
@@ -264,6 +258,16 @@ namespace GEX
 	void Actor::shouldBeAffraid(bool beAffraid)
 	{
 		shouldBeAffraid_ = beAffraid;
+	}
+
+	void Actor::setAffraidElapsedTime(sf::Time affraidElapsedTime)
+	{
+		affraidElapsedTime_ = affraidElapsedTime;
+	}
+
+	sf::Time Actor::getElapsedPowerTime()
+	{
+		return elapsedPowerTime_;
 	}
 
 

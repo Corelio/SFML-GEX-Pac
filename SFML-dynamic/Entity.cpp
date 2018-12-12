@@ -6,7 +6,7 @@
 * @version 1.0
 *
 * @section DESCRIPTION
-* Test #1 - Pacman (Nov, 23th)
+* Test #2 - Pacman (Dec, 12th)
 *
 * @section LICENSE
 *
@@ -29,7 +29,6 @@
 */
 #include "Entity.h"
 #include <cassert>
-#include <iostream>
 
 namespace GEX
 {
@@ -99,10 +98,16 @@ namespace GEX
 
 	void Entity::updateCurrent(sf::Time dt, CommandQueue& Commands)
 	{
+		// Hack to move the player only in one direction
 		if (velocity_.x != 0 && velocity_.y != 0) {
-			velocity_.y = 0;
+			// Keeping the direction with greater module
+			if (std::abs(velocity_.x) > std::abs(velocity_.y)) {
+				velocity_.y = 0.f;
+			}
+			else {
+				velocity_.x = 0.f;
+			}
 		}
-		//std::cout << velocity_.x << "  " << velocity_.y << std::endl;
 		move(velocity_ * dt.asSeconds());
 	}
 

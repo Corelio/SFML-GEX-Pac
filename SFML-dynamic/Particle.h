@@ -6,7 +6,7 @@
 * @version 1.0
 *
 * @section DESCRIPTION
-* Test #1 - Pacman (Nov, 23th)
+* Test #2 - Pacman (Dec, 12th)
 *
 * @section LICENSE
 *
