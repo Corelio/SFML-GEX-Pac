@@ -65,6 +65,7 @@ namespace GEX
 		bool									isMarkedForRemoval() const override;
 		bool									hasPower() const;
 		void									addPower();
+		void									removePower();
 		void									shouldBeAffraid(bool beAffraid);
 
 	private:

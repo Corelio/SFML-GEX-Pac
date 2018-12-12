@@ -53,6 +53,7 @@ namespace GEX
 		, commandQueue_()
 		, lives_(3)
 		, score_(0)
+		, lastCheckedScore_(0)
 		, scoreText_()
 		, livesText_()
 		, pacmanSpawnPosition_(40.f, worldBounds_.height / 2.f)
@@ -131,6 +132,9 @@ namespace GEX
 
 		//Update Texts
 		updateTexts();
+
+		//Update lives if score is % 1000
+		checkScore();
 
 	}
 
@@ -273,11 +277,6 @@ namespace GEX
 				auto& Pacman = static_cast<Actor&>(*collindingPair.first);
 				Pacman.setPosition(pacmanSpawnPosition_);
 				score_ += 200;
-				//EXTRA - each 1000 points get a life
-				if (score_ > 0 && score_ % 1000 == 0)
-				{
-					lives_++;
-				}
 				
 			}
 			//Pacman Ghost collision
@@ -287,7 +286,9 @@ namespace GEX
 				auto& Ghost = static_cast<Actor&>(*collindingPair.second);
 
 				if (Pacman.hasPower()) {
-					Ghost.destroy();
+					Ghost.setPosition(randowPositionInsideWorldBounds());
+					Pacman.removePower();
+					score_ += 200;
 				}
 				else {
 					Pacman.destroy();
@@ -302,7 +303,8 @@ namespace GEX
 				auto& Power  = static_cast<Actor&>(*collindingPair.second);
 
 				Pacman.addPower();
-				Power.destroy();
+				score_ += 200;
+				Power.setPosition(randowPositionInsideWorldBounds());
 			}
 		}
 	}
@@ -324,6 +326,7 @@ namespace GEX
 		sceneLayers_[UpperAir]->attachChild(std::move(Pac));
 	}
 
+	// Ghost chase pacman
 	void World::chasePlayer()
 	{
 		auto d = distance(*player_, *ghost_);
@@ -332,9 +335,37 @@ namespace GEX
 		}
 	}
 
+	// Tell the ghost that the pacman has power -> Ghost should be affraid
 	void World::informPowerToGhost()
 	{
 		ghost_->shouldBeAffraid(player_->hasPower());
+	}
+
+	// Generate a randow position inside the world bounds
+	sf::Vector2f World::randowPositionInsideWorldBounds()
+	{
+		sf::FloatRect viewBounds(worldView_.getCenter() - worldView_.getSize() / 2.f, worldView_.getSize());
+		int x = 0;
+		while (x <= viewBounds.left + BORDER_DISTANCE) {
+			x = randomInt(viewBounds.left + viewBounds.width - BORDER_DISTANCE);
+		}
+		int y = 0;
+		while (y <= viewBounds.top + BORDER_DISTANCE) {
+			y = randomInt(viewBounds.top + viewBounds.height - BORDER_DISTANCE);
+		}
+
+		return sf::Vector2f(x, y);
+
+	}
+
+	void World::checkScore()
+	{
+		//EXTRA - each 1000 points get a life
+		if (score_ != lastCheckedScore_ && score_ % 1000 == 0)
+		{
+			lives_++;
+			lastCheckedScore_ = score_;
+		}
 	}
 
 	//Draw the world

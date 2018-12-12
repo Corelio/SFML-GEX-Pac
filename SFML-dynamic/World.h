@@ -79,6 +79,10 @@ namespace GEX
 
 		void						informPowerToGhost();
 
+		sf::Vector2f				randowPositionInsideWorldBounds();
+
+		void						checkScore();
+
 	private:
 		enum Layer
 		{
@@ -118,6 +122,7 @@ namespace GEX
 		sf::Text					livesText_;
 
 		float						distanceToChase_;
+		int							lastCheckedScore_;
 
 	};
 

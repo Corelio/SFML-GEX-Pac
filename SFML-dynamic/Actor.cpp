@@ -234,6 +234,12 @@ namespace GEX
 		elapsedPowerTime_ = sf::seconds(10.f);
 	}
 
+	void Actor::removePower()
+	{
+		power_ = false;
+		elapsedPowerTime_ = sf::Time::Zero;
+	}
+
 	void Actor::shouldBeAffraid(bool beAffraid)
 	{
 		shouldBeAffraid_ = beAffraid;
