@@ -29,6 +29,7 @@
 */
 #include "Entity.h"
 #include <cassert>
+#include <iostream>
 
 namespace GEX
 {
@@ -98,6 +99,10 @@ namespace GEX
 
 	void Entity::updateCurrent(sf::Time dt, CommandQueue& Commands)
 	{
+		if (velocity_.x != 0 && velocity_.y != 0) {
+			velocity_.y = 0;
+		}
+		//std::cout << velocity_.x << "  " << velocity_.y << std::endl;
 		move(velocity_ * dt.asSeconds());
 	}
 

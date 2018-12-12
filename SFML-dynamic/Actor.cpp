@@ -151,16 +151,29 @@ namespace GEX
 			}
 		}
 		else {
-			//Update ghost "eyes"
+			//Update ghost "eyes"/Direction
 			if (state_ != State::Dead && type_ == ActorType::Ghost)
 			{
-				if (getVelocity().y < 0)
+				if (getVelocity().y != 0)
 				{
-					state_ = State::WalkUp;
+					if (getVelocity().y < 0)
+					{
+						state_ = State::WalkUp;
+					}
+					else
+					{
+						state_ = State::WalkDown;
+					}
 				}
-				else
-				{
-					state_ = State::WalkDown;
+				else {
+					if (getVelocity().x < 0)
+					{
+						state_ = State::WalkLeft;
+					}
+					else
+					{
+						state_ = State::WalkRight;
+					}
 				}
 			}
 		}
@@ -175,18 +188,26 @@ namespace GEX
 		//Get the animation
 		auto rec = animations_.at(state_).update(dt);
 
-		//Check direction to flip the character
-		if (direction_ == Direction::Left && getVelocity().x > 10)
-			direction_ = Direction::Right;
-		if (direction_ == Direction::Right && getVelocity().x < 0)
-			direction_ = Direction::Left;
+		//Check direction to flip the character (only if you are Pacman)
+		if (type_ == ActorType::Pacman)
+		{
+			if (direction_ == Direction::Left && getVelocity().x > 0)
+				direction_ = Direction::Right;
+			if (direction_ == Direction::Right && getVelocity().x < 0)
+				direction_ = Direction::Left;
 
-		// flip image left right
-		if (direction_ == Direction::Left)
-			rec = flip(rec);
+			// flip image left right
+			if (direction_ == Direction::Left)
+				rec = flip(rec);
+		}
 
 		//Set the sprite position over the texture
 		sprite_.setTextureRect(rec);
+
+		// Change the color of the special cherry
+		if (type_ == ActorType::Power) {
+				sprite_.setColor(sf::Color::Magenta);
+		}
 
 		//Center the sprite
 		centerOrigin(sprite_);

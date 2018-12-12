@@ -34,6 +34,7 @@
 #include "Utility.h"
 #include "Actor.h"
 #include "FontManager.h"
+#include <iostream>
 
 namespace GEX
 {
@@ -320,7 +321,7 @@ namespace GEX
 	void World::spawnPlayer()
 	{
 		std::unique_ptr<Actor> Pac(new Actor(ActorType::Pacman, textures_));
-		Pac->setPosition(pacmanSpawnPosition_);
+		Pac->setPosition(randowPositionInsideWorldBounds());
 		Pac->setState(Actor::State::Walk); //Set start state
 		player_ = Pac.get();
 		sceneLayers_[UpperAir]->attachChild(std::move(Pac));
@@ -329,9 +330,22 @@ namespace GEX
 	// Ghost chase pacman
 	void World::chasePlayer()
 	{
+		// Get the distance between player and ghost
 		auto d = distance(*player_, *ghost_);
+
+		// If the pac is close tho the ghost, start chase
 		if (d < distanceToChase_) {
-			ghost_->setVelocity(unitVector(player_->getWorldPosition() - ghost_->getWorldPosition())  * (player_->hasPower() ? -1.f : 1.f) * 100.f);
+			// get the velocity vector to move the ghost close to the pac
+			sf::Vector2f velocityTemp = unitVector(player_->getWorldPosition() - ghost_->getWorldPosition())  * (player_->hasPower() ? -1.f : 1.f) * 100.f;	
+			// We dont want diagonal moviments, so we will keep the orientation with greater value
+			if (std::abs(velocityTemp.x) > std::abs(velocityTemp.y)) {
+				velocityTemp.y = 0;
+			}
+			else {
+				velocityTemp.x = 0;
+			}
+			// Assign the velocity to the ghost
+			ghost_->setVelocity(velocityTemp);
 		}
 	}
 
@@ -463,7 +477,7 @@ namespace GEX
 		Cherry->setState(Actor::State::Idle); //Set start state
 		sceneLayers_[UpperAir]->attachChild(std::move(Cherry));
 
-		//Power
+		//Power Chery
 		std::unique_ptr<Actor> Power(new Actor(ActorType::Power, textures_));
 		Power->setPosition(worldView_.getSize().x - worldView_.getSize().x * 0.9f, worldBounds_.height - worldView_.getSize().y * 0.2f);
 		Power->setState(Actor::State::Idle); //Set start state
